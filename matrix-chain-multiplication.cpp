@@ -20,7 +20,7 @@ void load() {
   cin >> matrices.begin()->start;
   for (int j = 0; j < dimension_count - 2; ++j) {
     int dimension;
-    cin >> dimension;
+    cin >> dimension_count;
 
     matrices[j].end = dimension;
     matrices[j + 1].start = dimension;
