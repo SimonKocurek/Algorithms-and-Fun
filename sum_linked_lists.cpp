@@ -51,6 +51,10 @@ shared_ptr<Node> sum(shared_ptr<Node> a, shared_ptr<Node> b) {
         current = current->next;
     }
 
+    if (carry > 0) {
+        current->next = make_shared<Node>(carry);
+    }
+
     return head;
 }
 
