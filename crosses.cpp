@@ -2,11 +2,23 @@
 
 using namespace std;
 
-void print_impossible() {
-    cout << "Neda sa" << "\n";
-}
+void print_rotated_layout(int y, int x) {
+    for (int i = 0; i < y; ++i) {
+        for (int j = 0; j < x; ++j) {
+            auto vertical = i % 2 == 0;
+            auto horizontal = j % 4 < 2;
 
-void print_irregular_layout(int y, int x) {
+            if (vertical) {
+                cout << (horizontal ? 'o' : 'x');
+            } else {
+                cout << (horizontal ? 'x' : 'o');
+            }
+        }
+
+        if (i + 1 < y) {
+            cout << "\n";
+        }
+    }
 }
 
 void print_regular_layout(int y, int x) {
@@ -21,14 +33,16 @@ void print_regular_layout(int y, int x) {
                 cout << (horizontal ? 'x' : 'o');
             }
         }
-        cout << "\n";
+
+        if (i + 1 < y) {
+            cout << "\n";
+        }
     }
 }
 
 void print_layout(int y, int x) {
-    if ((x == 1) ||
-            (x % 2 == 1 && y & 4 == 2)) {
-
+    if ((x == 1) || (x % 2 == 1 && y % 4 == 2)) {
+        print_rotated_layout(y, x);
     } else {
         print_regular_layout(y, x);
     }
