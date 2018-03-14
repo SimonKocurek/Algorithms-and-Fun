@@ -4,25 +4,37 @@ using namespace std;
 
 typedef long long ll;
 
+int biggest(vector<int>& arr) {
+    int result = 0;
+    for (auto num : arr) {
+        result = max(result, num);
+    }
+    return result;
+}
+
+void swap(ll& a, ll& b, ll& c) {
+    ll temp = a;
+
+    a = b;
+    b = c;
+    c = temp;
+}
+
 ll max_sum(vector<int>& arr) {
-    ll result = 0;
-
-    int last_taken = INT_MIN;
-    for (int i = 0; i < arr.size(); ++i) {
-        if (last_taken + 1 == i) {
-            if (arr[i] > arr[last_taken]) {
-                result -= arr[last_taken];
-                result += arr[i];
-                last_taken = i;
-            }
-            continue;
-        }
-
-        result += arr[i];
-        last_taken = i;
+    if (arr.size() <= 2) {
+        return biggest(arr);
     }
 
-    return result;
+    ll first = arr[0];
+    ll second = max(arr[0], arr[1]);
+    ll last;
+
+    for (int i = 2; i < arr.size(); ++i) {
+        last = max(first + arr[i], second);
+        swap(first, second, last);
+    }
+
+    return second;
 }
 
 int main() {
