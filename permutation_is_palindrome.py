@@ -2,13 +2,13 @@ def can_be_palindrome(s):
     s = s.replace(' ', '')
     s = s.lower()
 
-    char_count = [0] * 256
+    char_odd = 0
     for char in s:
-        char_count[ord(char)] += 1
+        char_odd ^= 1 << (ord(char) - ord('a')) 
     
-    can_be_odd = len(s) % 2 == 1
-    for count in char_count:
-        if count % 2 == 1:
+    can_be_odd = True
+    for i in range(27):
+        if char_odd & (1 << i) > 0:
             if can_be_odd:
                 can_be_odd = False
             else:
