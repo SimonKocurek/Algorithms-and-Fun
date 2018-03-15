@@ -3,11 +3,18 @@
 using namespace std;
 
 int longest_subsequence(vector<int>& arr) {
-    int result = 0;
+    vector<int> result;
 
-    
+    for (auto num : arr) {
+        if (result.empty() || result.back() < num) {
+            result.push_back(num);
+        } else {
+            auto addr = lower_bound(result.begin(), result.end(), num);
+            *addr = num;
+        }
+    }
 
-    return result;
+    return result.size();
 }
 
 int main() {
