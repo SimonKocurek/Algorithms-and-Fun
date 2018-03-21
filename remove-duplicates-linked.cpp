@@ -7,7 +7,7 @@ using namespace std;
 struct Node {
     int data;
     shared_ptr<Node> next;
-    
+
     Node(int data) : data(data) {}
 };
 
@@ -56,6 +56,21 @@ void remove_with_limited_memory(shared_ptr<Node> head) {
     }
 }
 
+void remove_with_limited_memory_better(shared_ptr<Node> head) {
+    while (head != nullptr) {
+        auto runner = head;
+        while (runner->next != nullptr) {
+            if (runner->next->data == head->data) {
+                runner->next = runner->next->next; 
+            } else {
+                runner = runner->next;
+            }
+        }
+
+        head = head->next;
+    }
+}
+
 void print_linked_list(shared_ptr<Node> head) {
     auto current = head;
     while (current != nullptr) {
@@ -76,7 +91,7 @@ int main() {
         current->next = make_shared<Node>(i);
         current = current->next;
     }
-    
+
     print_linked_list(head);
     remove_duplicates(head);
     print_linked_list(head);
@@ -87,7 +102,7 @@ int main() {
         current = current->next;
     }
     print_linked_list(head);
-    remove_with_limited_memory(head);
+    remove_with_limited_memory_better(head);
     print_linked_list(head);
 
     return 0;
