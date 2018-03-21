@@ -1,4 +1,4 @@
-/*
+'''
 This problem was asked by Google.
 
 Suppose we represent our file system
@@ -50,16 +50,43 @@ Note:
 
 The name of a file contains at least a period and an extension.
 The name of a directory or sub-directory will not contain a period.
-*/
+'''
 
-#include <bits/stdc++.h>
+def longest_path(s):
+    if not s:
+        return ''
 
-using namespace std;
+    files = s.split('\n')
+    
+    longest_len = 0
+    current_len = 0
 
-int main() {
-	cout << longest_path("dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext") << "\n";
-	cout << longest_path("dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext") << "\n";
+    longest = []
+    current = []
 
-	return 0;
-}
+    tabs = -1 
+    for filename in files:
+        current_tabs = filename.count('\t')
+        filename_without_tabs = filename[current_tabs:]
+        
+        if tabs >= current_tabs:
+            last = current.pop()
+            current_len -= len(last)
+
+        if tabs > current_tabs:
+            last = current.pop()
+            current_len -= len(last)
+
+        current.append(filename_without_tabs)
+        current_len += len(filename_without_tabs)
+        tabs = current_tabs
+
+        if current_len > longest_len and filename_without_tabs.count('.') > 0:
+            longest = list(current)
+            longest_len = current_len
+
+    return '/'.join(longest)
+    
+print(longest_path("dir\n\tsubdir1\n\tsubdir2\n\t\tfile.ext"))
+print(longest_path("dir\n\tsubdir1\n\t\tfile1.ext\n\t\tsubsubdir1\n\tsubdir2\n\t\tsubsubdir2\n\t\t\tfile2.ext"))
 
