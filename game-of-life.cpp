@@ -26,55 +26,130 @@ using namespace std;
 
 struct point {
     int x, y;
+
+    inline bool operator<(const point& a) const {
+        return x < a.x || (x == a.x && y < a.y);
+    }
 };
 
-bool exists(set<set<int>>& points, int x, int y) {
-    return points.find(y) != points.end() && 
-           points[y].find(x) != points[y].end();
-}
+const point directions[8] = {
+    {1, 1},
+    {1, 0},
+    {1, -1},
+    {0, -1},
+    {-1, -1},
+    {-1, 0},
+    {-1, 1},
+    {0, 1}
+};
 
-point find_dimensions(vector<point>& points) {
-    auto& min = points[0];
-    auto& max = points[0];
+class board {
+    private:
+        set<point> points;
 
-    for (auto& point : points) {
-
-    }
-
-    return {max.x - min.x, max.y - min.y}; 
-}
-
-void print(vector<point>& points) {
-    cout << "====================\n";
-
-    if (points.empty()) {
-        return;       
-    }
-
-    auto bounds = find_dimensions(points);
-    for (int y = 0; y < bounds.y; ++y) {
-        for (int x = 0; x < bounds.x; ++x) {
-
+        void add(int x, int y) {
+            points.insert({x, y});
         }
-    }
-}
 
-vector<point> step(vector<point> points) {
-    vector<point> result;
+        void remove(int x, int y) {
+            points.erase({x, y});
+        }
 
-    return result; 
-}
+        int neighbours(int x, int y) {
+            int count = 0;
 
-void visualize(vector<point> points, int steps) {
-    print(points);
-    for (int i = 0; i < steps; ++i) {
-        points = step(points);
-        print(points);
-    }
-}
+            for (auto& direction : directions) {
+                auto new_x = x + direction.x;
+                auto new_y = y + direction.y;
+
+                if (points.find({new_x, new_y}) != points.end()) {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        void tick() {
+            set<point> new_points;
+
+            for (auto& p : points) {
+                auto neighbour_count = neighbours(p.x, p.y);
+                if (neighbour_count == 2 || neighbour_count == 3) {
+                    new_points.insert(p);
+                }
+            }
+
+            for (auto& p : points) {
+                for (auto& direction : directions) {
+                    auto neighbour_count = neighbours(p.x + direction.x, p.y + direction.y);
+                    if (neighbour_count == 3) {
+                        new_points.insert({p.x + direction.x, p.y + direction.y});
+                    }
+                }
+            }
+
+            points = new_points;
+        }
+
+        void print() {
+            auto min = minimal();
+            auto max = maximal();
+
+            for (int y = min.y; y <= max.y; ++y) {
+                for (int x = min.x; x <= max.x; ++x) {
+                    if (points.find({x, y}) != points.end()) {
+                        cout << "* ";
+                    } else {
+                        cout << ". ";
+                    }
+                }
+                cout << "\n";
+            }
+
+            cout << "==========================\n\n";
+        }
+
+        point minimal() {
+            point min = {INT_MAX, INT_MAX};
+
+            for (auto& p : points) {
+                min.x = std::min(min.x, p.x);
+                min.y = std::min(min.y, p.y);
+            }
+
+            return min;
+        }
+
+        point maximal() {
+            point max = {INT_MIN, INT_MIN};
+
+            for (auto& p : points) {
+                max.x = std::max(max.x, p.x);
+                max.y = std::max(max.y, p.y);
+            }
+
+            return max;
+        }
+
+    public:
+        board(vector<point>& data, int ticks) {
+            for (auto& inserted_point : data) {
+                add(inserted_point.x, inserted_point.y);
+            }
+
+            print();
+            for (int i = 0; i < ticks; ++i) {
+                tick();
+                print();
+            }
+        }
+};
 
 int main() {
-    vector<point> points{};
+    vector<point> points {{1,1}, {1,0}, {1, -1}, {0, -1}, {-1, 0}};
+    board test(points, 15);
 
     return 0;
 }
+
