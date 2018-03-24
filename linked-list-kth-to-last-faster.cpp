@@ -1,5 +1,4 @@
 /* Implement an algorithm to find the kth to last element of singly linked list. */
-
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -11,29 +10,26 @@ struct node {
     node(int data, node* next) : data(data), next(next) {}
 };
 
-int length(node* head) {
-    int result = 0;
-
-    while (head != nullptr) {
-        head = head->next;
-        result++;
+node* kth_to_last(node* head, int k) {
+    if (k < 0) {
+        throw;
     }
 
-    return result;
-}
-
-node* kth_to_last(node* head, int k) {
-    auto len = length(head);
-
-    if (len - k - 1 < 0) {
+    if (head == nullptr) {
         return nullptr;
     }
 
-    for (int i = 0; i < len - k - 1; ++i) {
-        if (head == nullptr) {
-            break;
+    auto runner = head;
+    for (int i = 0; i < k; ++i) {
+        runner = runner->next;
+        if (runner == nullptr) {
+            return nullptr;
         }
+    }
+
+    while (runner != nullptr && runner->next != nullptr) {
         head = head->next;
+        runner = runner->next;
     }
 
     return head;
