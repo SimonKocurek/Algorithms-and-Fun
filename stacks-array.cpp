@@ -11,10 +11,10 @@ class stacks {
         vector<T> values;
 
         int stack_count;
-        int first_free = - 1;
+        int first_free;
 
     public:
-        stacks(int stack_count) : stack_count(stack_count) {
+        stacks(int stack_count) : stack_count(stack_count), first_free(-1) {
             top.resize(stack_count);
             fill(top.begin(), top.end(), -1);
         }
@@ -47,11 +47,10 @@ class stacks {
             }
 
             auto position = top[stack_id];
-            top[stack_id] = next[position];
-
             if (position == -1) {
                 throw;
             }
+            top[stack_id] = next[position];
 
             auto result = values[position];
 
