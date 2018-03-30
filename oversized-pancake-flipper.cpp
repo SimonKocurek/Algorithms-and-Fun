@@ -1,31 +1,62 @@
 #include <bits/stdc++.h>
-#define MAX_BITS 99
+#define MAX_BITS 1000
 
 using namespace std;
 
-typedef pair<int, bitset<MAX_BITS>> sizedBitset; 
+typedef bitset<MAX_BITS> Bitset;
+typedef pair<int, Bitset> SizedBitset; 
+typedef pair<Bitset, int> DistantBitset;
 
-int flip(sizedBitset& pancakes, int flipper) {
+struct comparator {
+  bool operator()(const DistantBitset& a, const DistantBitset& b) {
+    return a.second > b.second ||
+      a.second == b.second &&
+      a.first.count() > b.first.count();
+  }
+};
+
+int Flip(SizedBitset& pancakes, SizedBitset& flipper) {
   if (pancakes.second.none()) {
     return 0;
   }
 
-  unordered_set<bitset<MAX_BITS>> seen;
-  queue<pair<bitset<MAX_BITS>, int>> next;
+  unordered_set<Bitset> seen;
+  priority_queue<DistantBitset, vector<DistantBitset>, comparator> next;
 
   seen.insert(pancakes.second);
   next.push({pancakes.second, 0});
 
   while (!next.empty()) {
-    auto current = next.front();
+    auto current = next.top();
     next.pop();
 
+    auto next_distance = current.second + 1;
+    auto current_pancakes = current.first;
+
+    auto moved_flipper = flipper.second;
+    for (int i = 0; i < pancakes.first - flipper.first + 1; ++i) {
+      auto flipped = current_pancakes ^ moved_flipper; 
+      moved_flipper <<= 1;
+
+      if (flipped.none()) {
+        return next_distance;
+      }
+
+      if (seen.find(flipped) != seen.end()) {
+        continue;
+      }
+
+      seen.insert(flipped);
+      next.push({flipped, next_distance});
+    }
   }
 
   return -1;
 }
 
-void printResult(int result) {
+void PrintResult(int result, int id) {
+  cout << "Case #" << (id + 1) << ": ";
+
   if (result == -1) {
     cout << "IMPOSSIBLE" << "\n";
   } else {
@@ -33,31 +64,36 @@ void printResult(int result) {
   }
 }
 
-sizedBitset loadPancakes() {
+SizedBitset LoadPancakes() {
   string in;
   cin >> in;
 
   int bits = in.length();
-  bitset<MAX_BITS> pancakes(in, 0, bits, '+', '-');
+  Bitset pancakes(in, 0, bits, '+', '-');
 
   return {bits, pancakes};
 }
 
-int loadFlipper() {
-  int flipper;
-  cin >> flipper;
-  return flipper;
+SizedBitset LoadFlipper() {
+  int bits;
+  cin >> bits;
+
+  Bitset flipper;
+  for (int i = 0; i < bits; ++i) {
+    flipper[i] = true;
+  }
+  return {bits, flipper};
 }
 
 int main() {
   int sets;
   cin >> sets;
   for (int i = 0; i < sets; ++i) {
-    auto pancakes = loadPancakes();
-    auto flipper = loadFlipper();
+    auto pancakes = LoadPancakes();
+    auto flipper = LoadFlipper();
 
-    auto result = flip(pancakes, flipper);
-    printResult(result);
+    auto result = Flip(pancakes, flipper);
+    PrintResult(result, i);
   }
   return 0;
 }
