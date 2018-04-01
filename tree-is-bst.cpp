@@ -22,7 +22,7 @@ NodeInfo Traverse(Node* root) {
   if (root->left) {
     auto left = Traverse(root->left);
 
-    current.bst = current.bst && left.bst && left.max < root->value;
+    current.bst = current.bst && left.bst && left.max <= root->value;
     current.min = min(left.min, current.min);
     current.max = max(left.max, current.max);
   }
