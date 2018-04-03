@@ -43,7 +43,7 @@ string Printed(Line& line, int length) {
     auto spaces_per_word = (length - line.second) / (line.first.size() - 1);
     auto additional_spaces = (length - line.second) % (line.first.size() - 1);
 
-    for (int i = 0; i < line.first.size(); ++i) {
+    for (int i = 0; i < line.first.size() - 1; ++i) {
       result += line.first[i];
 
       for (int j = 0; j < spaces_per_word; ++j) {
@@ -56,6 +56,7 @@ string Printed(Line& line, int length) {
       }
     }
 
+    result += line.first.back();
   }
 
   return result;
