@@ -2,18 +2,58 @@
 
 using namespace std;
 
-vector<string> Justify(vector<string>& words, int length) {
-  vector<string> result;
+typedef pair<vector<string>, int> Line;
 
-  string added;
+vector<Line> Pack(vector<string>& words, int length) {
+  vector<Line> result;
+
+  Line next = {vector<string>(), 0};
   for (auto& word : words) {
-    if (!added.empty()) {
-      added += word;
+    if (next.first.size() + next.second + word.size() <= length) {
+      next.second += word.size();
+      next.first.push_back(word);
+
+    } else {
+      result.push_back(next);
+
+      next.first.clear();
+      next.first.push_back(word);
+      next.second = word.size();
+    }
+  }
+
+  if (!next.first.empty()) {
+    result.push_back(next);
+  }
+
+  return result;
+}
+
+string Printed(Line& line, int length) {
+  string result;
+
+  if (line.first.size() == 1) {
+    result = line.first.back();
+
+    for (int i = result.size(); i < length; ++i) {
+      result += ' ';
     }
 
-    if (added.length() >= length()) {
-      result.push_back(added);
-      added.clear();
+  } else {
+    auto spaces_per_word = (length - line.second) / (line.first.size() - 1);
+    auto additional_spaces = (length - line.second) % (line.first.size() - 1);
+
+    for (int i = 0; i < line.first.size(); ++i) {
+      result += line.first[i];
+
+      for (int j = 0; j < spaces_per_word; ++j) {
+        result += ' ';
+      }
+
+      if (additional_spaces) {
+        additional_spaces--;
+        result += ' ';
+      }
     }
 
   }
@@ -21,7 +61,26 @@ vector<string> Justify(vector<string>& words, int length) {
   return result;
 }
 
+vector<string> Justify(vector<string>& words, int length) {
+  vector<string> result;
+
+  auto lines = Pack(words, length);
+  for (auto& line : lines) {
+    auto printed = Printed(line, length);
+    result.push_back(printed);
+  }
+
+  return result;
+}
+
 int main() {
+  vector<string> words {"the", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"};
+  int length = 16;
+
+  for (auto& line : Justify(words, length)) {
+    cout << line << "\n";
+  }
+
   return 0;
 }
 
