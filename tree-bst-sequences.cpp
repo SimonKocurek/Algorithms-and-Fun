@@ -11,29 +11,12 @@ struct Node {
   Node(int value) : value(value), left(nullptr), right(nullptr) {}
 };
 
-Node* result;
-
-int Traverse(Node* root, Node* p, Node* q) {
-  if (!root) {
-    return 0;
-  }
-
-  int got =
-    (root == p) +
-    (root == q) +
-    Traverse(root->left, p, q) +
-    Traverse(root->right, p, q);
-
-  if (got == 2 && !result) {
-    result = root;
-  }
-
-  return got;
+void Traverse(Node* root, vector<int>& current, vector<vector<int>>& result) {
 }
 
-Node* FindAncestor(Node* root, Node* p, Node* q) {
-  result = nullptr;
-  Traverse(root, p, q);
+vector<vector<int>> Reconstructions(Node* root) {
+  vector<vector<int>> result;
+
   return result;
 }
 
@@ -48,8 +31,7 @@ int main() {
   auto p = a->left->left->left;
   auto q = a->left->right;
 
-  cout << FindAncestor(a, p, q)->value << "\n";
-
+  cout << Trave
   return 0;
 }
 
