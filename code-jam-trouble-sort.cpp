@@ -2,37 +2,42 @@
 
 using namespace std;
 
-void Sort(vector<int>& values) {
-  bool done = false;
-  while (!done) {
-    done = true;
-
-    for (int i = 0; i < values.size() - 2; ++i) {
-      if (values[i] > values[i + 2]) {
-        done = false;
-        swap(values[i], values[i + 2]);
-      }
-    }
-  }
-
-}
-
 void Solve() {
   int count;
   cin >> count;
 
-  vector<int> integers(count);
-  for (auto& integer : integers) {
-    cin >> integer;
+  priority_queue<int, vector<int>, greater<int>> left;
+  priority_queue<int, vector<int>, greater<int>> right;
+
+  for (int i = 0; i < count; ++i) {
+    int next;
+    cin >> next;
+
+    if (i & 1) {
+      right.push(next);
+    } else {
+      left.push(next);
+    }
   }
 
-  Sort(integers);
+  auto current = left.top();
+  left.pop();
+  for (int i = 1; i < count; ++i) {
+    int next;
+    if (i & 1) {
+      next = right.top();
+      right.pop();
+    } else {
+      next = left.top();
+      left.pop();
+    }
 
-  for (int i = 0; i < integers.size() - 1; ++i) {
-    if (integers[i] > integers[i + 1]) {
-      cout << i;
+    if (next < current) {
+      cout << i - 1;
       return;
     }
+
+    current = next;
   }
 
   cout << "OK";
