@@ -2,6 +2,21 @@
 
 using namespace std;
 
+void Sort(vector<int>& values) {
+  bool done = false;
+  while (!done) {
+    done = true;
+
+    for (int i = 0; i < values.size() - 2; ++i) {
+      if (values[i] > values[i + 2]) {
+        done = false;
+        swap(values[i], values[i + 2]);
+      }
+    }
+  }
+
+}
+
 void Solve() {
   int count;
   cin >> count;
@@ -11,7 +26,16 @@ void Solve() {
     cin >> integer;
   }
 
+  Sort(integers);
 
+  for (int i = 0; i < integers.size() - 1; ++i) {
+    if (integers[i] > integers[i + 1]) {
+      cout << i;
+      return;
+    }
+  }
+
+  cout << "OK";
 }
 
 int main() {
@@ -19,8 +43,8 @@ int main() {
   cin.tie(NULL);
 
   int tests;
-  cin >> test;
-  for (int i = 1; i <= test; ++i) {
+  cin >> tests;
+  for (int i = 1; i <= tests; ++i) {
     cout << "Case #" << i << ": ";
     Solve();
     cout << "\n";
