@@ -58,32 +58,42 @@ vector<char> BuildOrder(vector<char>& projects, vector<pair<char, char>>& depend
   if (result.size() == projects.size()) {
     return result;
   }
+
+  throw 1;
 }
 
 int main() {
   vector<char> projects {'a', 'b', 'c', 'd', 'e', 'f'};
-  vector<pair<char, char>> dependencies {{'a', 'd'}, {'f', 'b'}, {'b', 'd'}, {'f', 'a'}, {'d', 'c'}};
+  vector<pair<char, char>> dependencies {
+    {'a', 'd'}, {'f', 'b'}, {'b', 'd'}, {'f', 'a'}, {'d', 'c'}
+  };
 
   for (auto result : BuildOrder(projects, dependencies)) {
     cout << result << " ";
   }
-  cout << "\n" << "Expected: e/f, b/a, d, c\n\n";
+  cout << "Expected: e/f, b/a, d, c\n\n";
 
   vector<char> projects2 {'a', 'b', 'c', 'd'};
   vector<pair<char, char>> dependencies2 {{'a', 'b'}, {'b', 'c'}, {'c', 'a'}, {'a', 'd'}};
 
-  for (auto result : BuildOrder(projects2, dependencies2)) {
-    cout << result << " ";
+  try {
+    for (auto result : BuildOrder(projects2, dependencies2)) {
+      cout << result << " ";
+    }
+  } catch(...) {
+    cout << "Nothing";
   }
-  cout << "\n" << "Expected: Nothing\n\n";
+  cout << "Expected: Nothing\n\n";
 
   vector<char> projects3 {'a', 'b', 'c', 'd', 'e', 'f'};
-  vector<pair<char, char>> dependencies3 {{'a', 'b'}, {'b', 'c'}, {'a', 'd'}, {'d', 'c'}, {'c', 'e'}, {'e', 'f'}, {'c', 'f'}};
+  vector<pair<char, char>> dependencies3 {
+    {'a', 'b'}, {'b', 'c'}, {'a', 'd'}, {'d', 'c'}, {'c', 'e'}, {'e', 'f'}, {'c', 'f'}
+  };
 
   for (auto result : BuildOrder(projects3, dependencies3)) {
     cout << result << " ";
   }
-  cout << "\n" << "Expected: a, b/d, c, e, f\n\n";
+  cout << "Expected: a, b/d, c, e, f\n\n";
 
   return 0;
 }
