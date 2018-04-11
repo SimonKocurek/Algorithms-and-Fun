@@ -16,76 +16,16 @@ struct Node {
 
 void Print(Reconstructions printed) {
   for (auto& reconstruction : printed) {
+    cout << "{";
     for (auto& value : reconstruction) {
-      cout << value << " ";
+      cout << value << ", ";
     }
-    cout << "\n";
-  }
-}
-
-void Extend(Reconstruction& base, Reconstruction& next) {
-  base.insert(base.end(), next.begin(), next.end());
-}
-
-void Add(Reconstructions& left, Reconstructions& right, int root, Reconstructions& result) {
-  for (auto& left_reconstruction : left) {
-    Reconstruction added {root};
-    Extend(added, left_reconstruction);
-
-    auto left_part_size = added.size();
-    for (auto& right_reconstruction : right) {
-      added.resize(left_part_size);
-      Extend(added, right_reconstruction);
-      result.push_back(added);
-    }
-  }
-}
-
-void Add(Reconstructions& single, int root, Reconstructions& result) {
-  for (auto& reconstruction: single) {
-    Reconstruction added {root};
-    Extend(added, reconstruction);
-
-    result.push_back(added);
-  }
-}
-
-void Add(int root, Reconstructions& result) {
-  result.push_back(Reconstruction {root});
-}
-
-void AddNoneEmpty(
-    Reconstructions& left,
-    Reconstructions& right,
-    int root,
-    Reconstructions& result) {
-
-  if (!right.empty() && !left.empty()) {
-    Add(right, left, root, result);
-    Add(left, right, root, result);
-
-  } else if (!right.empty()) {
-    Add(right, root, result);
-
-  } else if (!left.empty()) {
-    Add(left, root, result);
-
-  } else {
-    Add(root, result);
+    cout << "}\n";
   }
 }
 
 Reconstructions Reconstruct(Node* root) {
-  Reconstructions result;
 
-  if (root) {
-    auto left = Reconstruct(root->left);
-    auto right = Reconstruct(root->right);
-
-    AddNoneEmpty(left, right, root->value, result);
-  }
-
-  return result;
 }
 
 int main() {
