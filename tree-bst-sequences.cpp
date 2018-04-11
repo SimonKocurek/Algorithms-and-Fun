@@ -22,10 +22,85 @@ void Print(Reconstructions printed) {
     }
     cout << "}\n";
   }
+  cout << "\n";
 }
 
-Reconstructions Reconstruct(Node* root) {
+Reconstructions Weave(Reconstruction left, Reconstruction right) {
+  Reconstructions result;
 
+  if (left.empty() && right.empty()) {
+    result.emplace_back();
+    return result;
+  }
+
+  if (right.empty()) {
+    result.push_back(left);
+    return result;
+  }
+
+  if (left.empty()) {
+    result.push_back(right);
+    return result;
+  }
+
+  auto woven_left = Weave(Reconstruction(left.begin() + 1, left.end()), right);
+  for (auto woven : woven_left) {
+    Reconstruction added {left[0]};
+    added.insert(added.end(), woven.begin(), woven.end());
+    result.push_back(added);
+  }
+
+  auto woven_right = Weave(left, Reconstruction(right.begin() + 1, right.end()));
+  for (auto woven : woven_right) {
+    Reconstruction added {right[0]};
+    added.insert(added.end(), woven.begin(), woven.end());
+    result.push_back(added);
+  }
+
+  return result;
+}
+
+Reconstructions Combine(
+    Reconstructions left, 
+    Reconstructions right,
+    const int value) {
+  Reconstructions result;
+  
+  if (left.empty()) {
+    left.emplace_back();
+  }
+
+  if (right.empty()) {
+    right.emplace_back();
+  }
+
+  for (const auto& left_reconstruction : left) {
+    for (const auto& right_reconstruction : right) {
+
+      for (auto& woven : Weave(left_reconstruction, right_reconstruction)) {
+        woven.insert(woven.begin(), value);
+        result.push_back(woven);
+      }
+
+    }
+  }
+
+  return result;
+}
+
+Reconstructions Reconstruct(const Node* root) {
+  Reconstructions result;
+
+  if (root) {
+    auto left = Reconstruct(root->left);
+    auto right = Reconstruct(root->right);
+
+    for (auto& reconstruction : Combine(left, right, root->value)) {
+      result.push_back(reconstruction);
+    }
+  }
+
+  return result;
 }
 
 int main() {
