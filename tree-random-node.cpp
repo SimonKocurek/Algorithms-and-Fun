@@ -8,26 +8,34 @@ class Tree {
     unique_ptr<Tree> right;
 
   public:
+    int size;
     int value;
 
-    Tree(int value) : left(nullptr), right(nullptr), value(value) {}
+    Tree(int value) : left(nullptr), right(nullptr), size(1), value(value) {}
 
-    void Insert(int inserted) {
+    int Insert(int inserted) {
+      auto added = 0;
+
       if (inserted < value) {
-        if (left != nullptr) {
-          left->Insert(inserted);
+        if (left) {
+          added += left->Insert(inserted);
         } else {
           left = make_unique<Tree>(inserted);
+          added++;
         }
       }
 
       if (inserted > value) {
-        if (right != nullptr) {
-          right->Insert(inserted);
+        if (right) {
+          added += right->Insert(inserted);
         } else {
           right = make_unique<Tree>(inserted);
+          added++;
         }
       }
+
+      size += added;
+      return added;
     }
 
     Tree* Find(int searched) {
@@ -35,55 +43,57 @@ class Tree {
         return this;
       }
 
-      if (searched < value && left != nullptr) {
+      if (searched < value && left) {
         return left->Find(searched);
       } 
-      if (searched > value && right != nullptr){
+      if (searched > value && right){
         return right->Find(searched);
       }
 
       return nullptr;
     }
 
-    void Delete(int deleted) {
-      if (deleted < value && left != nullptr) {
+    int Delete(int deleted) {
+      auto deleted_count = 0;
+
+      if (deleted < value && left) {
         if (left->value == deleted) {
+          deleted_count = left->size;
           left = nullptr;
         } else {
-          left->Delete(deleted);
+          deleted_count = left->Delete(deleted);
         }
-
       }
 
-      if (deleted > value && right != nullptr) {
+      if (deleted > value && right) {
         if (right->value == deleted) {
+          deleted_count = right->size;
           right = nullptr;
         } else {
-          right->Delete(deleted);
+          deleted_count = right->Delete(deleted);
         }
       }
+
+      size -= deleted_count;
+      return deleted_count;
     }
 
-    void GetRandomNode(Tree*& selected, int& chance) {
-      if (rand() % chance == 0) {
-        selected = this;
+    Tree* GetRandomNode(const int chosen) {
+      if (chosen == 0) {
+        return this;
       }
 
-      if (left != nullptr) {
-        left->GetRandomNode(selected, ++chance);
-      }
-
-      if (right != nullptr) {
-        right->GetRandomNode(selected, ++chance);
+      auto left_size = left ? left->size : 0;
+      if (chosen <= left_size) {
+        return left->GetRandomNode(chosen - 1);
+      } else {
+        return right->GetRandomNode(chosen - 1 - left_size);
       }
     }
 
     Tree* GetRandomNode() {
-      Tree* result = this;
-      int chance = 1;
-
-      GetRandomNode(result, chance);
-      return result;
+      int chosen = random() % size;
+      return GetRandomNode(chosen);
     }
 
 };
