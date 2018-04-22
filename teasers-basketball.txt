@@ -1,0 +1,11 @@
+Game1: One shot to make the hoop.
+Game2: Three shots and make 2 of 3 hoops.
+
+p is probability of making shot.
+Which p favour which game?
+------------------------------------------
+
+1) Write as p and p^3 + 3p^2(1 - p).
+2) Solve quadratic equation p = p^3 + 3p^2(1 - p).
+3) They are equal when p = 0, 1, 0.5.
+4) when p > 0.5 take second, when p < 0.5 take first.
