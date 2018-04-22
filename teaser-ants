@@ -1,0 +1,9 @@
+Ants on 3 vertexes of triangle.
+Each picks random direction.
+What is probability of collision on triangle and N-gon?
+-------------------------
+
+1) All possibilities 2^n (each can choose one of 2 directions).
+2) Good possibilities 2^n - 2 (all without cases where all ants
+   choose same direction).
+3) Result is (2^n) / (2^n - 2).
