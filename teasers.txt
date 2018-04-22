@@ -1,0 +1,9 @@
+9 balls, one heavier
+2 scale messurements
+====================
+
+1) Divide into sets of 3 balls.
+2) Meassure first and second set.
+3) Concider only the heavier (or third if first and second are same weight) set
+4) Apply again but with first, second and third ball of chosen set.
+5) Take the heaviest ball.
