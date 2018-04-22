@@ -1,0 +1,13 @@
+20 bottles
+19 have 1g pills
+1 has 1.1g pills
+1 precise messurement
+Which one has 1.1g pills?
+=========================
+
+1) Mark bottles 0 .. 19.
+2) Take same number of pills from the bottle as it's mark.
+3) Weight them all.
+4) Subtract sum(0 .. 19) from the result.
+5) Divide by 0.1.
+6) Result is bottle mark.
