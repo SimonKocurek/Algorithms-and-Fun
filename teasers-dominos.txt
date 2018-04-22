@@ -1,0 +1,11 @@
+8x8 board with missing 2 opposite corners.
+31 dominoes where each takes 2 spaces on board.
+Is there a possible placement?
+---------------------------------------------
+
+There isn't. First row and column have only 7 spaces.
+By using vertival placement we would only achieve 
+5x8 board and same problem... 3x8, 1x8 where corner
+is missing, so we can't do that. By using horizontal
+we need to use at least one vertical placement, again
+creating odd number of places in different row/ column.
