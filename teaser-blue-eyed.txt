@@ -1,0 +1,13 @@
+Blue-eyed must leave as soon as possible.
+1 flight each day.
+They can only see others.
+There is at least 1 blue eyed.
+------------------------------
+
+1) Start at 1, because there is at least 1.
+2) 1 would leave if he didn't see any other blue-eyed.
+2) 2 would leave after 2 days .. because both can see just 1 blue-eyed
+   person not leaving on day 1.
+3) 3 would leave after 3 days .. because all of then would see 2 blue-eyed
+   people that didn't leave 2 days.
+4) Repeat... solution is number of blue-eyed people.
