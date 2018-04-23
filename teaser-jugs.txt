@@ -1,0 +1,12 @@
+5 quart jug.
+3 quart jug.
+
+Oddly shaped.
+How to meassure 4 quarts?
+------------------------
+
+1) Pour 3 quarts to 5 quart.
+2) Pour 2 quarts (until overflows) from 3 to 5 quart.
+3) Pour out 5 quart.
+4) Pour remaining 1 quart from 3 quart jug to 5 quart jug.
+5) Pour another 3 quarts to 5 quart jug.
