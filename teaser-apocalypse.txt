@@ -1,0 +1,11 @@
+Every family needs 1 girl.
+They have kids until they have 1 girl.
+What is new gender ration?
+---------------------------------------
+
+1) Build probability tree of having boy/ girl.
+2) Use the tree to build gender ratios (1:0 -> 1/2, 1:1 -> 1/4, 1:2 -> 1/8)
+3) Sum them in the infinity: lim n->inf (sum(2^i) / sum(2^i * (n - i)))
+4) Simplify to lim n->inf (2^(n+1) - 1 / (2^(n+1) - (n+2)))
+5) We can now see, that after derivating ... we would reach 1/1.
+6) Solution is equal ration 0.5 / 0.5.
