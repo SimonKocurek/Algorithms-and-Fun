@@ -1,0 +1,21 @@
+100 floors
+2 eggs
+
+Find floor at which eggs won't break.
+-------------------------------------
+
+1) With 1 egg it's at worst 100 attempts.
+2) With 2 the situation changes .. we can
+   apply binary search which would bring us
+   to a 50 attempts at worst.
+3) We can improve this. If a thrown egg won't
+   break we can use it again. So using parts
+   smaller than 1/2 can be faster.
+4) After testing it's clear that sqrt(100) is
+   the number of steps we take with the first
+   egg and only after it breaks, we change the
+   step to 1.
+5) Why sqrt(100)? The more floors the first egg
+   skips, the more the second one has to test ..
+   so choosing a value where both are same is
+   minimal in the worst case.
