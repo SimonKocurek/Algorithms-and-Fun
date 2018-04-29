@@ -1,0 +1,18 @@
+100 lockers
+100 passes
+
+1st pass - Open all
+2nd pass - "Switch" every second
+3rd pass - "Switch" every third
+...
+100 pass
+
+How many are open?
+------------------------------------
+
+1) Write out a little simulation.
+2) Notice that only squares are open at the end.
+3) Because for every a there exists b such that a * b == our number..
+   if the number is a square the a == b so it only counts as 1 divisor..
+   and odd number of divisors means that the door is open at the end.
+4) The result is 10 (1, 4, 9, 16, 25, 36, 49, 64, 81, 100).
