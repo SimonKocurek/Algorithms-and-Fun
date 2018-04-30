@@ -6,3 +6,9 @@ Reusable and works on any number of drops.
 
 Tests only once a day.
 7 days to get test result.
+--------------------------------
+
+1) Similar to BIT, we let each test strip reperesent if tested bottle id
+   has certain bit on.
+2) Now looking at the positive tests we can tell what bits are on in the
+   poissoned bottle id.
