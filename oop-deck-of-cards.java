@@ -10,23 +10,15 @@ public enum Value {
     TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, J, Q, K;
 }
 
-public class Card<S extends Symbol, V extends Value> {
+public class Card {
 
-    public final S symbol;
-    public final V value;
+    public final Symbol symbol;
+    public final Value value;
 
-    public Card(S symbol, V value) {
+    public Card(Symbol symbol, Value value) {
         this.symbol = symbol;
         this.value = value;
     }
-}
-
-public class GenericCard extends Card<Symbol, Value> {
-
-    public GenericCard(Symbol symbol, Value value) {
-        super(symbol, value);
-    }
-
 }
 
 public class Deck<C extends Card> {
@@ -42,7 +34,7 @@ public class Deck<C extends Card> {
 
         for (Symbol symbol : Symbol.values()) {
             for (Value value : Value.values()) {
-                Card card = new GenericCard(symbol, value)
+                Card card = new Card(symbol, value);
                 deck.AddCard(card);
             }
         }
