@@ -29,7 +29,7 @@ public class Jukebox {
         this.value += value;
     }
 
-    public bool canPlaySong() {
+    public boolean canPlaySong() {
         return value >= SONG_VALUE;
     }
 

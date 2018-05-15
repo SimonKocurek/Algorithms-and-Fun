@@ -14,7 +14,7 @@ public class Piece {
     public final List<Edge> edges;
     public final BufferedImage image;
     
-    public bool fitsWith(Chunk chunk) {
+    public boolean fitsWith(Chunk chunk) {
         return fittinEdge(chunk) != null;
     }
 

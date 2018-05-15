@@ -64,7 +64,7 @@ public class Deck<C extends Card> {
         return cards.size();
     }
 
-    public bool isEmpty() {
+    public boolean isEmpty() {
         return cards.isEmpty();
     }
     
@@ -88,7 +88,7 @@ public class Hand<C extends Card> {
         return cards.size();
     }
 
-    public bool isEmpty() {
+    public boolean isEmpty() {
         return cards.isEmpty();
     }
     
