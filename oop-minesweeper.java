@@ -1,6 +1,12 @@
+public enum Type {
+
+    MINE, HIDDEN, REGULAR
+
+}
+
 public class Cell {
 
-    public boolean hidden;
+    public Type type;
     public final int neighbours;
 
 }
