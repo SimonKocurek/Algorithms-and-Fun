@@ -71,7 +71,7 @@ class Node {
 
 }
 
-class Main {
+class Scratch {
 
     public static void main(String[] args) {
         int from = 1;
@@ -118,8 +118,8 @@ class Main {
         graph.putIfAbsent(from, new Node());
         graph.putIfAbsent(to, new Node());
 
-        Edge edge = new Edge(to, weight);
-        graph.get(from).edges.add(edge);
+        graph.get(from).edges.add(new Edge(to, weight));
+        graph.get(to).edges.add(new Edge(from, weight));
     }
 
     private static int shortestPathsCount(Map<Integer, Node> graph, int from, int to) {
@@ -132,12 +132,18 @@ class Main {
         while (!paths.isEmpty()) {
             Edge current = paths.poll();
 
+            if (distances.containsKey(to) && current.weight > distances.get(to)) {
+                // From now on, only longer than shortest paths follow
+                break;
+            }
+
             if (!distances.containsKey(current.to) || distances.get(current.to) > current.weight) {
                 shortestPaths.put(current.to, 0);
                 distances.put(current.to, current.weight);
             }
 
             if (distances.get(current.to) == current.weight) {
+                // Found another shortest path
                 shortestPaths.put(current.to, shortestPaths.get(current.to) + 1);
             }
 
