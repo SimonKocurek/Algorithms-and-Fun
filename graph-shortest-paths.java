@@ -50,11 +50,13 @@ test3.txt:
 
 class Edge implements Comparable<Edge> {
 
+    final int from;
     final int to;
     final int weight;
 
-    Edge(int from, int weight) {
-        this.to = from;
+    Edge(int from, int to, int weight) {
+        this.from = from;
+        this.to = to;
         this.weight = weight;
     }
 
@@ -71,7 +73,7 @@ class Node {
 
 }
 
-class Scratch {
+class Main {
 
     public static void main(String[] args) {
         int from = 1;
@@ -118,16 +120,23 @@ class Scratch {
         graph.putIfAbsent(from, new Node());
         graph.putIfAbsent(to, new Node());
 
-        graph.get(from).edges.add(new Edge(to, weight));
-        graph.get(to).edges.add(new Edge(from, weight));
+        graph.get(from).edges.add(new Edge(from, to, weight));
+        graph.get(to).edges.add(new Edge(to, from, weight));
     }
 
     private static int shortestPathsCount(Map<Integer, Node> graph, int from, int to) {
         PriorityQueue<Edge> paths = new PriorityQueue<>();
         Map<Integer, Integer> distances = new HashMap<>();
         Map<Integer, Integer> shortestPaths = new HashMap<>();
+        Set<Integer> visited = new HashSet<>();
 
-        paths.offer(new Edge(from, 0));
+        shortestPaths.put(from, 1);
+        distances.put(from, 0);
+        visited.add(from);
+
+        for (Edge edge : graph.get(from).edges) {
+            paths.offer(new Edge(from, edge.to, edge.weight));
+        }
 
         while (!paths.isEmpty()) {
             Edge current = paths.poll();
@@ -137,20 +146,23 @@ class Scratch {
                 break;
             }
 
-            if (!distances.containsKey(current.to) || distances.get(current.to) > current.weight) {
-                shortestPaths.put(current.to, 0);
-                distances.put(current.to, current.weight);
-            }
+            shortestPaths.putIfAbsent(current.to, 0);
+            distances.putIfAbsent(current.to, current.weight);
 
             if (distances.get(current.to) == current.weight) {
                 // Found another shortest path
-                shortestPaths.put(current.to, shortestPaths.get(current.to) + 1);
+                shortestPaths.put(current.to, shortestPaths.get(current.to) + shortestPaths.get(current.from));
             }
 
+            if (distances.get(current.to) != current.weight || visited.contains(current.to)){
+                continue;
+            }
+
+            visited.add(current.to);
             List<Edge> neighbours = graph.get(current.to).edges;
             for (Edge edge : neighbours) {
                 int newDistance = current.weight + edge.weight;
-                paths.offer(new Edge(edge.to, newDistance));
+                paths.offer(new Edge(current.to, edge.to, newDistance));
             }
         }
 
