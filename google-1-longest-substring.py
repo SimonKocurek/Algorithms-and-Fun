@@ -5,7 +5,7 @@ def get_letter_positions(word):
         char = word[i]
         if char not in letter_positions:
             letter_positions[char] = []
-        
+
         letter_positions[char].append(i)
 
     return letter_positions
@@ -34,7 +34,7 @@ def longest_subsequence(word, dictionary):
     for word in dictionary:
         if is_subsequence_of(letter_positions, word) and len(result) < len(word):
             result = word
-    
+
     return result if len(result) > 0 else None
 
 print(longest_subsequence('abppple', ['able', 'ale', 'apple', 'bale', 'kangaroo']))
