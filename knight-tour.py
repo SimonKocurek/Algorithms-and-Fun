@@ -9,20 +9,31 @@ def valid_move(x, y, used_tile):
         not used_tile[y][x]
 
 def knight_tours_from(x, y, used_tile, remaining_tiles):
-    if remaining_tiles == 0:
-        return 1
-
     result = 0
 
-    for x_change, y_change in KNIGHT_MOVEMENTS:
-        new_x, new_y = x + x_change, y + y_change
+    states = [(x, y, False)]
+    while len(states) > 0:
+        x, y, going_back = states.pop()
 
-        if not valid_move(new_x, new_y, used_tile):
+        if going_back:
+            remaining_tiles += 1
+            used_tile[y][x] = False
             continue
 
-        used_tile[new_y][new_x] = True
-        result += knight_tours_from(new_x, new_y, used_tile, remaining_tiles - 1)
-        used_tile[new_y][new_x] = False
+        else:
+            states.append((x, y, True))
+            used_tile[y][x] = True
+            remaining_tiles -= 1
+
+        if remaining_tiles == 0:
+            result += 1
+            continue
+
+        for x_change, y_change in KNIGHT_MOVEMENTS:
+            new_x, new_y = x + x_change, y + y_change
+
+            if valid_move(new_x, new_y, used_tile):
+                states.append((new_x, new_y, False))
 
     return result
 
