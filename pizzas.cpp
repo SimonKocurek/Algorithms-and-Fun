@@ -2,45 +2,57 @@
 
 using namespace std;
 
-int64_t highest_price(vector<vector<int64_t>>& price, vector<int>& bottles, int start, int end, int year) {
-    if (start == end) {
-        return bottles[start] * year;
+int64_t find_wasted(vector<int>& pizzas, int people, int size) {
+    int64_t eaten = (int64_t) people * size;
+    int64_t all = 0;
+    for (auto& pizza : pizzas) {
+        all += pizza;
     }
-
-    if (price[start + 1][end] == -1) {
-        price[start + 1][end] = highest_price(price, bottles, start + 1, end, year + 1);
-    }
-
-    if (price[start][end - 1] == -1) {
-        price[start][end - 1] = highest_price(price, bottles, start, end - 1, year + 1);
-    }
-
-    return max(
-        price[start + 1][end] + year * bottles[start],
-        price[start][end - 1] + year * bottles[end]
-    );
+    return all - eaten;
 }
 
-int64_t highest_price(vector<int>& bottles) {
-    vector<vector<int64_t>> price(bottles.size(), vector<int64_t>(bottles.size(), -1));
-    return highest_price(price, bottles, 0, price.size() - 1, 1);
+bool is_possible(vector<int>& pizzas, int people, int size) {
+    int64_t unfed = people;
+
+    for (auto& pizza : pizzas) {
+        unfed -= pizza / size;
+
+        if (unfed <= 0) {
+            return true;
+        }
+    }
+
+    return unfed <= 0;
+}
+
+int find_biggest(vector<int>& pizzas, int people) {
+    int64_t start = 0;
+    int64_t end = *max_element(pizzas.begin(), pizzas.end()) + 1;
+
+    while ((start + 1) < end) {
+        int64_t current = (start + end) / 2;
+        if (is_possible(pizzas, people, current)) {
+            start = current;
+        } else {
+            end = current;
+        }
+    }
+
+    return start;
 }
 
 int main() {
-    int sets;
-    cin >> sets;
+    int pizza_count, people;
+    cin >> pizza_count >> people;
 
-    for (int i = 0; i < sets; ++i) {
-        int bottle_count;
-        cin >> bottle_count;
-
-        vector<int> bottles(bottle_count);
-        for (auto& bottle : bottles) {
-            cin >> bottle;
-        }
-
-        cout << highest_price(bottles) << endl;
+    vector<int> pizzas(pizza_count);
+    for (auto& pizza : pizzas) {
+        cin >> pizza;
     }
 
+    auto biggest = find_biggest(pizzas, people);
+    auto wasted = find_wasted(pizzas, people, biggest);
+
+    cout << biggest << "\n" << wasted << endl;
     return 0;
 }
