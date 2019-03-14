@@ -96,9 +96,10 @@ int main() {
     tokenize(tokens, debug, 0, size);
 
     unsort(result, helper, tokens, 0, size);
-    for (auto value : result) {
-        cout << value << " ";
+    for (int i = 0; i < result.size() - 1; ++i) {
+        cout << result[i] << " ";
     }
+    cout << result.back() << endl;
 
     return 0;
 }
