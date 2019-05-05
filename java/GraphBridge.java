@@ -1,11 +1,14 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GraphBridge {
 
-    private static int LOOP_EDGE = -1;
+    private static int time = 0;
 
     private static class Edge {
 
@@ -26,36 +29,118 @@ public class GraphBridge {
 
     }
 
+    private static class Vertex {
+
+        int idx;
+        List<Edge> edges;
+
+        boolean discovered;
+        int discoveryTime;
+        Edge discoveryEdge;
+
+        int loopValue;
+
+        public Vertex(int idx, List<Edge> edges) {
+            this.idx = idx;
+            this.edges = edges;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o == this;
+        }
+
+        @Override
+        public int hashCode() {
+            return idx;
+        }
+
+    }
+
     public static void main(String[] args) throws IOException {
-        Map<Integer, List<Edge>> graph = loadGraph();
+        Map<Integer, Vertex> graph = loadGraph();
+
+        for (Vertex vertex : graph.values()) {
+            findMaxBridge(graph, vertex);
+        }
 
         int result = -1;
-        for (List<Edge> vertexEdges : graph.values()) {
-            for (Edge edge : vertexEdges) {
+        for (Vertex from : graph.values()) {
+            for (Edge edge : from.edges) {
+                int nextIdx = from.idx == edge.start ? edge.end : edge.start;
+                Vertex to = graph.get(nextIdx);
 
-                if (edge.weight == LOOP_EDGE) {
-                    continue;
+                if (from.loopValue != to.loopValue) {
+                    result = Math.max(result, edge.weight);
                 }
-
-                Set<Edge> visited = new HashSet<>();
-                visited.add(edge);
-                if (isCycle(graph, visited, edge, edge.start)) {
-                    edge.weight = LOOP_EDGE;
-                    continue;
-                }
-
-                result = Math.max(result, edge.weight);
             }
         }
 
         System.out.println(result);
     }
 
-    private static Map<Integer, List<Edge>> loadGraph() throws IOException {
+    private static int findMaxBridge(Map<Integer, Vertex> graph, Vertex current) {
+        int result = -1;
+        if (current.discovered) {
+            return result;
+        }
+
+        current.discovered = true;
+        current.discoveryTime = time;
+        current.loopValue = time;
+
+        for (Edge edge : current.edges) {
+            int nextIdx = current.idx == edge.start ? edge.end : edge.start;
+            Vertex next = graph.get(nextIdx);
+
+            if (!next.discovered) {
+                time++;
+                next.discoveryEdge = edge;
+
+                findMaxBridge(graph, next);
+                current.loopValue = Math.min(current.loopValue, next.loopValue);
+
+                if (current.loopValue != next.loopValue) {
+                    result = Math.max(result, edge.weight);
+                }
+
+            } else if (current.discoveryEdge != edge) {
+                current.loopValue = Math.min(current.loopValue, next.discoveryTime);
+            }
+        }
+
+        return result;
+    }
+
+    private static Map<Integer, Vertex> loadGraph() throws IOException {
+        List<Edge> edges = loadEdges();
+        Map<Integer, List<Edge>> graph = new HashMap<>();
+
+        for (Edge edge : edges) {
+            if (!graph.containsKey(edge.start)) {
+                graph.put(edge.start, new ArrayList<Edge>());
+            }
+
+            if (!graph.containsKey(edge.end)) {
+                graph.put(edge.end, new ArrayList<Edge>());
+            }
+
+            graph.get(edge.start).add(edge);
+            graph.get(edge.end).add(edge);
+        }
+
+        Map<Integer, Vertex> result = new HashMap<>();
+        for (Map.Entry<Integer, List<Edge>> vert : graph.entrySet()) {
+            result.put(vert.getKey(), new Vertex(vert.getKey(), vert.getValue()));
+        }
+        return result;
+    }
+
+    private static List<Edge> loadEdges() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         int connections = Integer.valueOf(bf.readLine());
 
-        Map<Integer, List<Edge>> graph = new HashMap<>();
+        List<Edge> result = new ArrayList<>(connections);
 
         for (int i = 0; i < connections; i++) {
             String[] parts = bf.readLine().split(" ");
@@ -63,43 +148,10 @@ public class GraphBridge {
             int end = Integer.valueOf(parts[1]);
             int weight = Integer.valueOf(parts[2]);
 
-            if (!graph.containsKey(start)) {
-                graph.put(start, new ArrayList<Edge>());
-            }
-
-            if (!graph.containsKey(end)) {
-                graph.put(end, new ArrayList<Edge>());
-            }
-
-            Edge edge = new Edge(start, end, weight);
-            graph.get(start).add(edge);
-            graph.get(end).add(edge);
+            result.add(new Edge(start, end, weight));
         }
 
-        return graph;
-    }
-
-    private static boolean isCycle(Map<Integer, List<Edge>> graph, Set<Edge> visited, Edge current, int wantedEnd) {
-        for (Edge edge : graph.get(current.end)) {
-            if (visited.contains(edge)) {
-                continue;
-            }
-
-            if (edge.end == wantedEnd || edge.start == wantedEnd) {
-                edge.weight = LOOP_EDGE;
-                return true;
-            }
-
-
-            visited.add(edge);
-            if (isCycle(graph, visited, edge, wantedEnd)) {
-                edge.weight = LOOP_EDGE;
-                return true;
-            }
-            visited.remove(edge);
-        }
-
-        return false;
+        return result;
     }
 
 }
