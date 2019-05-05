@@ -40,7 +40,7 @@ public class GraphBridge {
 
         int loopValue;
 
-        public Vertex(int idx, List<Edge> edges) {
+        Vertex(int idx, List<Edge> edges) {
             this.idx = idx;
             this.edges = edges;
         }
@@ -60,22 +60,10 @@ public class GraphBridge {
     public static void main(String[] args) throws IOException {
         Map<Integer, Vertex> graph = loadGraph();
 
-        for (Vertex vertex : graph.values()) {
-            findMaxBridge(graph, vertex);
-        }
-
         int result = -1;
-        for (Vertex from : graph.values()) {
-            for (Edge edge : from.edges) {
-                int nextIdx = from.idx == edge.start ? edge.end : edge.start;
-                Vertex to = graph.get(nextIdx);
-
-                if (from.loopValue != to.loopValue) {
-                    result = Math.max(result, edge.weight);
-                }
-            }
+        for (Vertex vertex : graph.values()) {
+            result = Math.max(result, findMaxBridge(graph, vertex));
         }
-
         System.out.println(result);
     }
 
@@ -97,10 +85,10 @@ public class GraphBridge {
                 time++;
                 next.discoveryEdge = edge;
 
-                findMaxBridge(graph, next);
+                result = Math.max(result, findMaxBridge(graph, next));
                 current.loopValue = Math.min(current.loopValue, next.loopValue);
 
-                if (current.loopValue != next.loopValue) {
+                if (next.loopValue > current.discoveryTime) {
                     result = Math.max(result, edge.weight);
                 }
 
