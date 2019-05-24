@@ -45,7 +45,10 @@ public class Opinions {
                         break;
                     }
 
-                    union(analyzed, analyzedSize, a, b);
+                    // TODO fix this shit:
+                    //  - Invert and add
+//                    union(sameOpinion, a, invertedB);
+//                    union(analyzed, analyzedSize, a, b);
                     break;
 
                 case "?":
