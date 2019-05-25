@@ -77,7 +77,7 @@ public class SkuskaMotovod {
 
                 if (color[neighbour] == UNVISITED) {
                     color[neighbour] = neighbourColor;
-                    color[neighbour] = dfs.push(neighbour);
+                    dfs.push(neighbour);
                 }
 
                 // else the color is opposite and already processed
