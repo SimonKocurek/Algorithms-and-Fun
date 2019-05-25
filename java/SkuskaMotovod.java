@@ -41,7 +41,7 @@ public class SkuskaMotovod {
             // Start the DFS for each component
             for (int stop : graph.keySet()) {
                 if (color[stop] != UNVISITED) {
-                    // if stop already has a color that means we already processed it's component
+                    // if stop already has a color that means we already processed its component
                     continue;
                 }
 
