@@ -29,6 +29,7 @@ public class SkuskaMotovod {
             // and it is very sparse graph, with only 20_000 edges at most
 
             // Duplicated edges will not change bipartitness, however list is faster than set
+            // so we chose mapping: stop -> connected stops
             Map<Integer, List<Integer>> graph = loadGraph(roads, sc);
 
             int[] color = new int[stops];
@@ -67,7 +68,7 @@ public class SkuskaMotovod {
 
         while (!dfs.empty()) {
             int currentStop = dfs.pop();
-            int neighbourColor = getOpppositeColor(color[currentStop]);
+            int neighbourColor = getOppositeColor(color[currentStop]);
 
             for (int neighbour : graph.get(currentStop)) {
                 // in bipartite graphs neighbour must have opposite colors
@@ -88,7 +89,7 @@ public class SkuskaMotovod {
         return true;
     }
 
-    private static int getOpppositeColor(int color) {
+    private static int getOppositeColor(int color) {
         return color == LEFT_BANK ? RIGHT_BANK : LEFT_BANK;
     }
 

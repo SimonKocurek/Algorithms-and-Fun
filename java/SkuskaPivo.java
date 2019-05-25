@@ -49,13 +49,13 @@ public class SkuskaPivo {
     }
 
     private static int[] loadArray(int count, Scanner sc) {
-        int[] phases = new int[count];
+        int[] array = new int[count];
 
-        for (int i = 0; i < phases.length; i++) {
-            phases[i] = sc.nextInt();
+        for (int i = 0; i < count; i++) {
+            array[i] = sc.nextInt();
         }
 
-        return phases;
+        return array;
     }
 
 }
