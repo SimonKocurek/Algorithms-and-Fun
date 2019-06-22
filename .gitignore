@@ -36,3 +36,12 @@ cmake-build-debug/
 .idea
 .vscode
 target
+
+# Visual Studio
+.vs
+*.json
+*.tlog
+*.vcxproj*
+*.ilk
+*.pdb
+*idb
