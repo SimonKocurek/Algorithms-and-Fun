@@ -9,7 +9,6 @@ public class Karty {
         Scanner sc = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
 
         int cards = sc.nextInt();
-
         int[] card = new int[cards];
         for (int i = 0; i < cards; i++) {
             card[i] = sc.nextInt();
@@ -51,7 +50,7 @@ public class Karty {
                 got.pop();
                 int weakerCardIndex = gotOnIndex.pop();
 
-                // I is now larger
+                // i is now larger than weakerCardIndex
                 weakerCards = weakerToTheRight[weakerCardIndex] + (weakerCardIndex - i);
             }
 
