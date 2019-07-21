@@ -21,7 +21,7 @@ void load_values() {
 }
 
 int lowest_one_bit(int number) {
-    return number & (-number); 
+    return number & (-number);
 }
 
 long prefix_sum(int index) {
