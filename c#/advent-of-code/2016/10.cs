@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.IO;
 using System.Linq;
 
 namespace AdventOfCode
@@ -13,16 +11,21 @@ namespace AdventOfCode
             var commands = LoadCommands();
             var parseResults = new Parser().Parse(commands);
             var bots = LoadBots(parseResults);
+            PassValues(parseResults, bots);
         }
 
         private static IEnumerable<string> LoadCommands()
         {
+            var lines = new List<string>();
+
             var line = Console.ReadLine();
-            while (!"end".Equals(line?.ToLowerInvariant()))
+            while (!"".Equals(line))
             {
-                yield return line;
+                lines.Add(line);
                 line = Console.ReadLine();
             }
+
+            return lines;
         }
 
         private static Dictionary<int, Bot> LoadBots(IEnumerable<Parser.ParseResult> parseResults)
@@ -35,6 +38,50 @@ namespace AdventOfCode
             }
 
             return bots;
+        }
+
+        private static void PassValues(IEnumerable<Parser.ParseResult> parseResults, Dictionary<int, Bot> bots)
+        {
+            foreach (var parseResult in parseResults.OfType<Parser.ValueParseResult>())
+            {
+                PropagateValue(bots, parseResult.botId, parseResult.value);
+            }
+        }
+
+        private static void PropagateValue(Dictionary<int, Bot> bots, int botId, int value)
+        {
+            var checkedBots = new Stack<Bot>();
+
+            var bot = bots[botId];
+            bot.AddValue(value);
+            checkedBots.Push(bot);
+
+            while (checkedBots.Count > 0)
+            {
+                bot = checkedBots.Pop();
+                if (bot.CanPass())
+                {
+                    PassToOtherBots(bots, checkedBots, bot);
+                }
+            }
+        }
+
+        private static void PassToOtherBots(Dictionary<int, Bot> bots, Stack<Bot> checkedBots, Bot bot)
+        {
+            for (var i = 0; i < bot.redirects.Count; i++)
+            {
+                if (bot.redirects[i] == -1)
+                {
+                    continue;
+                }
+
+                var redirectedBot = bots[bot.redirects[i]];
+                redirectedBot.AddValue(bot.values[i]);
+
+                checkedBots.Push(redirectedBot);
+            }
+
+            bot.values.Clear();
         }
     }
 
@@ -59,9 +106,7 @@ namespace AdventOfCode
 
         public IEnumerable<ParseResult> Parse(IEnumerable<string> commands)
         {
-            return
-                from command in commands
-                select ParseCommand(command);
+            return commands.Select(ParseCommand);
         }
 
         private ParseResult ParseCommand(string command)
@@ -84,67 +129,57 @@ namespace AdventOfCode
             var firstRedirect = parts[5] == "bot" ? int.Parse(parts[6]) : -1;
             var secondRedirect = parts[10] == "bot" ? int.Parse(parts[11]) : -1;
 
-            return new BotParseResult {id = id, firstRedirect = firstRedirect, secondRedirect = secondRedirect};
+            return new BotParseResult { id = id, firstRedirect = firstRedirect, secondRedirect = secondRedirect };
         }
 
         private ValueParseResult ParseValueCommand(string command)
         {
             var parts = command.Split();
 
-            var id = int.Parse(parts[1]);
-            var value = int.Parse(parts[5]);
+            var value = int.Parse(parts[1]);
+            var id = int.Parse(parts[5]);
 
-            return new ValueParseResult {botId = id, value = value};
+            return new ValueParseResult { botId = id, value = value };
         }
     }
 
     internal class Bot
     {
-        private readonly List<Action<int>> _redirects;
-        private readonly List<int> _values;
+        private readonly int _id;
+        public readonly List<int> redirects;
+        public readonly List<int> values;
 
-        private Bot(params Action<int>[] redirects)
+        private Bot(int id, params int[] redirects)
         {
-            _values = new List<int>();
-            _redirects = redirects.ToList();
+            _id = id;
+            values = new List<int>();
+            this.redirects = redirects.ToList();
         }
 
         public static Bot FromParseResult(Parser.BotParseResult parseResult, Dictionary<int, Bot> bots)
         {
-            return new Bot(
-                GenerateRedirect(bots, parseResult.firstRedirect),
-                GenerateRedirect(bots, parseResult.secondRedirect)
-            );
-        }
-
-        private static Action<int> GenerateRedirect(IReadOnlyDictionary<int, Bot> bots, int redirect)
-        {
-            if (redirect < -1)
-            {
-                return passed => { };
-            }
-
-            return passed => bots[redirect].AddValue(passed);
+            return new Bot(parseResult.id, parseResult.firstRedirect, parseResult.secondRedirect);
         }
 
         public void AddValue(int value)
         {
-            if (_values.Count < _redirects.Count)
+            if (values.Count < redirects.Count)
             {
-                _values.Add(value);
+                values.Add(value);
             }
 
-            if (_values.Count != _redirects.Count)
-            {
-                return;
-            }
+            values.Sort();
 
-            for (var i = 0; i < _values.Count; i++)
+            if (values.Count == redirects.Count && values[0] == 17 && values[1] == 61)
             {
-                _redirects[i].Invoke(_values[i]);
+                Console.WriteLine(_id);
             }
-
-            _values.Clear();
         }
+
+        public bool CanPass()
+        {
+            return values.Count == redirects.Count;
+        }
+
     }
 }
