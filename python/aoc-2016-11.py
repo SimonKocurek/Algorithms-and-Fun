@@ -233,10 +233,6 @@ def least_moves(initial_state: State) -> int:
             seen.add(next_state)
             next.put((next_state, next_moves))
 
-            if len(seen) > 4**11:
-                print('debilina')
-                return
-
     raise Exception('Getting to final state is not possible')
 
 
